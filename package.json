@@ -1,0 +1,24 @@
+{
+  "name": "md-links",
+  "version": "1.0.0",
+  "description": "Markdown links - Laboratoria",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mariebec/LIM012-fe-md-links.git"
+  },
+  "author": "Mariela",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mariebec/LIM012-fe-md-links/issues"
+  },
+  "homepage": "https://github.com/mariebec/LIM012-fe-md-links#readme",
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2"
+  }
+}
