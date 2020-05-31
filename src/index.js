@@ -1,5 +1,6 @@
 const insertedPath = './src/cli.js';
 const path = require('path');
+const fs = require('fs');
 
 // const convertToAbsolute = (newPath) => {
 //   let route = newPath;
@@ -7,17 +8,17 @@ const path = require('path');
 //   return route;
 // };
 
-const convertToAbsolute = (newPath) => (path.isAbsolute(newPath) ? newPath : path.resolve(newPath));
+const absolutePath = (newPath) => (path.isAbsolute(newPath) ? newPath : path.resolve(newPath));
 
-convertToAbsolute(insertedPath);
+absolutePath(insertedPath);
 
 // const validatePath = () => {
 //   console.log('Validar ruta');
 // };
 
-// const isFile = () => {
-//   console.log('Determinar si es un archivo');
-// };
+const pathIsFile = (newPath) => fs.statSync(newPath).isFile();
+
+pathIsFile(insertedPath);
 
 // const isDirectory = () => {
 //   console.log('Determinar si es un directorio');
@@ -25,8 +26,8 @@ convertToAbsolute(insertedPath);
 
 
 module.exports = {
-  convertToAbsolute,
-  /* validatePath,
-  isFile,
-  isDirectory, */
+  absolutePath,
+  pathIsFile,
+  // validatePath,
+  // isDirectory,
 };
