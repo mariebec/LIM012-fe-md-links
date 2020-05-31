@@ -1,5 +1,5 @@
 const {
-  absolutePath, pathIsFile,
+  absolutePath, pathIsFile, pathIsDirectory,
 } = require('../src/index');
 
 describe('absolutePath', () => {
@@ -18,13 +18,13 @@ describe('absolutePath', () => {
 // });
 
 describe('pathIsFile', () => {
-  it('Debería retornar "true" si la ruta corresponde a un archivo', () => {
+  it('Debería retornar "false" si la ruta no corresponde a un archivo', () => {
     expect(pathIsFile('./src/')).toBe(false);
   });
 });
 
-// describe('isDirectory', () => {
-//   it('Debería retornar "true" si la ruta corresponde a un directorio', () => {
-//     expect(isDirectory('../src/')).toBe(true);
-//   });
-// });
+describe('pathIsDirectory', () => {
+  it('Debería retornar "true" si la ruta corresponde a un directorio', () => {
+    expect(pathIsDirectory('./src/')).toBe(true);
+  });
+});
