@@ -1,29 +1,30 @@
 const {
-  convertToAbsolute, /* validatePath, isFile, isDirectory, */
+  absolutePath, pathIsFile,
 } = require('../src/index');
 
-describe('convertToAbsolute', () => {
+describe('absolutePath', () => {
   it('Debería retornar una ruta absoluta', () => {
-    expect(convertToAbsolute('./src/')).toBe('/home/dell/Documentos/bootcamp-Lab/LIM012-fe-md-links/src');
-    expect(convertToAbsolute('/home/dell/Documentos/bootcamp-Lab/LIM012-fe-md-links/src')).toBe('/home/dell/Documentos/bootcamp-Lab/LIM012-fe-md-links/src');
+    // Depende de la computadora del que ejecute el test
+    const path = '/home/dell/Documentos/bootcamp-Lab/LIM012-fe-md-links/src';
+    expect(absolutePath('./src/')).toBe(path);
+    expect(absolutePath(path)).toBe(path);
   });
 });
 
-/* describe('validatePath', () => {
-  it('Debería retornar "true" si la ruta es válida', () => {
-    expect(validatePath('../src/')).toBe(true);
-  });
-});
+// describe('validatePath', () => {
+//   it('Debería retornar "true" si la ruta es válida', () => {
+//     expect(validatePath('./src/')).toBe(true);
+//   });
+// });
 
-describe('isFile', () => {
+describe('pathIsFile', () => {
   it('Debería retornar "true" si la ruta corresponde a un archivo', () => {
-    expect(isFile('../src/')).toBe(true);
+    expect(pathIsFile('./src/')).toBe(false);
   });
 });
 
-describe('isDirectory', () => {
-  it('Debería retornar "true" si la ruta corresponde a un directorio', () => {
-    expect(isDirectory('../src/')).toBe(true);
-  });
-});
- */
+// describe('isDirectory', () => {
+//   it('Debería retornar "true" si la ruta corresponde a un directorio', () => {
+//     expect(isDirectory('../src/')).toBe(true);
+//   });
+// });
