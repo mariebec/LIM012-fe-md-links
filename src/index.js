@@ -10,8 +10,9 @@ const fs = require('fs');
 
 const absolutePath = (newPath) => (path.isAbsolute(newPath) ? newPath : path.resolve(newPath));
 
-// const validatePath = () => {
-//   console.log('Validar ruta');
+const validatePath = (newPath) => fs.existsSync(newPath);
+// if (fs.existsSync(newPath)) return true;
+// return false;
 // };
 
 const pathIsFile = (newPath) => fs.statSync(newPath).isFile();
@@ -22,6 +23,6 @@ const pathIsDirectory = (newPath) => fs.statSync(newPath).isDirectory();
 module.exports = {
   absolutePath,
   pathIsFile,
-  // validatePath,
+  validatePath,
   pathIsDirectory,
 };
