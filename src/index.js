@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const marked = require('marked');
 const jsdom = require('jsdom');
+const axios = require('axios');
 
 const { JSDOM } = jsdom;
 
@@ -13,6 +14,8 @@ const validatePath = (newPath) => fs.existsSync(newPath);
 const pathIsFile = (newPath) => fs.statSync(newPath).isFile();
 
 const pathIsDirectory = (newPath) => fs.statSync(newPath).isDirectory();
+
+const getExtension = (newPath) => path.extname(newPath);
 
 // fs.readdir('.', (err, files) => {
 //   console.log(err);
@@ -25,7 +28,7 @@ const getLinks = (newPath) => {
   if (validatePath(newPath)) {
     const absPath = absolutePath(newPath);
 
-    if (pathIsFile(absPath) && path.extname(absPath) === '.md') {
+    if (pathIsFile(absPath) && getExtension(absPath) === '.md') {
       // Obtener el contenido del archivo y pasarlo a string
       const mdStringContent = fs.readFileSync(newPath).toString();
       // console.log(mdStringContent);
@@ -47,11 +50,19 @@ const getLinks = (newPath) => {
           file: newPath,
         };
 
+        axios.get(obj.href)
+          .then((response) => {
+            console.log(response.status, response.statusText);
+          })
+          .catch((error) => {
+            console.log(error.code);
+          });
+
         arr.push(obj);
       });
       // console.log(arr);
     } else {
-      console.log('No es');
+      console.log('No es archivo md');
     }
   } else {
     console.log('Ruta no válida');
@@ -65,4 +76,5 @@ module.exports = {
   pathIsFile,
   validatePath,
   pathIsDirectory,
+  getExtension,
 };
