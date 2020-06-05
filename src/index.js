@@ -19,29 +19,46 @@ const getExtension = (newPath) => path.extname(newPath);
 
 const httpRequest = (link) => axios.get(link);
 
-const getLinks = (newPath, userPath) => {
+const getLinks = (newPath, userPath, options) => {
   // Obtener el contenido del archivo y pasarlo a string
   const mdStringContent = fs.readFileSync(newPath).toString();
-  // console.log(mdStringContent);
   // Convertir contenido del archivo .md a html
   const mdHtmlContent = marked(mdStringContent);
   // Extraer los links con jsdom
   const dom = new JSDOM(mdHtmlContent);
-  // console.log(dom);
   const nodeList = dom.window.document.querySelectorAll('a');
   const arrayOfAnchor = Array.from(nodeList);
   const arr = [];
 
-  arrayOfAnchor.forEach((element) => {
-    // console.log(element.textContent, element.getAttribute('href'));
-    const obj = {
-      href: element.getAttribute('href'),
-      text: element.textContent,
-      file: userPath,
-    };
+  if (options.validate) {
+    arrayOfAnchor.forEach((element) => {
+      arr.push(httpRequest(element.href)
+        .then((response) => ({
+          href: element.getAttribute('href'),
+          text: element.textContent,
+          file: userPath,
+          status: response.status,
+          statusText: response.statusText,
+        }))
+        .catch(() => ({
+          href: element.getAttribute('href'),
+          text: element.textContent,
+          file: userPath,
+          status: 'nose',
+          statusText: 'Fail',
+        })));
+    });
+  } else {
+    arrayOfAnchor.forEach((element) => {
+      const obj = {
+        href: element.getAttribute('href'),
+        text: element.textContent,
+        file: userPath,
+      };
+      arr.push(obj);
+    });
+  }
 
-    arr.push(obj);
-  });
   return arr;
 };
 
@@ -59,5 +76,4 @@ module.exports = {
   pathIsDirectory,
   getExtension,
   getLinks,
-  httpRequest,
 };
