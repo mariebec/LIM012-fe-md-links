@@ -1,7 +1,10 @@
 const path = require('path');
 
 const {
-  absolutePath, pathIsFile, pathIsDirectory, validatePath, /* isMarkdown, allLinks, mdLinksApi, */
+  absolutePath,
+  pathIsFile,
+  validatePath,
+  // httpRequest,
 } = require('../src/index');
 
 const testPath = path.resolve('./src/');
@@ -36,19 +39,16 @@ describe('pathIsFile', () => {
   });
 });
 
-describe('pathIsDirectory', () => {
-  it('Debería retornar "true" si la ruta corresponde a un directorio', () => {
-    expect(pathIsDirectory(testPath)).toBe(true);
-  });
-});
-
-// describe('isMarkdown', () => {
-//   it('Debería retornar "true" si el archivo es .md', () => {
-//     expect(isMarkdown(mdPath)).toBe(true);
-//   });
+// describe('httpRequest', () => {
+// eslint-disable-next-line max-len
+//   it('Debería retornar una promesa donde se resuelve el status del link', (done) => httpRequest('')
+//     .then((response) => {
+//       expect((response.status)).toBe(200);
+//       done();
+//     }));
 // });
 
-// describe('allLinks', () => {
+// describe('getLinks', () => {
 // eslint-disable-next-line max-len
 //   it('Debería retornar un array con los links encontrados o un array vacío si no hay links', () => {
 //     expect(allLinks(mdPath)).toEqual(testArray);
