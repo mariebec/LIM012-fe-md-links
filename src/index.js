@@ -13,8 +13,6 @@ const validatePath = (newPath) => fs.existsSync(newPath);
 
 const pathIsFile = (newPath) => fs.statSync(newPath).isFile();
 
-const pathIsDirectory = (newPath) => fs.statSync(newPath).isDirectory();
-
 const getExtension = (newPath) => path.extname(newPath);
 
 const httpRequest = (link) => axios.get(link);
@@ -62,18 +60,28 @@ const getLinks = (newPath, userPath, options) => {
   return arr;
 };
 
-// fs.readdir('.', (err, files) => {
-//   console.log(err);
-//   files.forEach((element) => {
-//     console.log(pathIsDirectory(element));
-//   });
-// });
+const getMdFiles = (newPath) => {
+  const arrOfFiles = [];
+  if (pathIsFile(newPath)) {
+    if (getExtension(newPath) === '.md') {
+      arrOfFiles.push(newPath);
+    }
+  } else {
+    fs.readdirSync(newPath).forEach((element) => {
+      const arr = getMdFiles(path.join(newPath, element));
+      arrOfFiles.push(...arr);
+    });
+  }
+  return arrOfFiles;
+};
+
 
 module.exports = {
   absolutePath,
   pathIsFile,
   validatePath,
-  pathIsDirectory,
   getExtension,
   getLinks,
+  httpRequest,
+  getMdFiles,
 };
