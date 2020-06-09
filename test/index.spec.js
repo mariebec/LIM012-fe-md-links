@@ -1,14 +1,10 @@
 const path = require('path');
+// const moxios = require('moxios');
 
-const {
-  absolutePath,
-  pathIsFile,
-  validatePath,
-  // httpRequest,
-} = require('../src/index');
+const utilFunctions = require('../src/index');
 
 const testPath = path.resolve('./src/');
-// const mdPath = path.resolve('./README.md');
+const mdPath = path.resolve('./folder/anotherFolder/README.md');
 
 // describe('mdLinksApi', () => {
 // eslint-disable-next-line max-len
@@ -21,37 +17,91 @@ const testPath = path.resolve('./src/');
 
 describe('absolutePath', () => {
   it('Debería retornar una ruta absoluta', () => {
-    expect(absolutePath('./src/')).toBe(testPath);
-    expect(absolutePath(testPath)).toBe(testPath);
+    expect(utilFunctions.absolutePath('./src/')).toBe(testPath);
+    expect(utilFunctions.absolutePath(testPath)).toBe(testPath);
   });
 });
 
 describe('validatePath', () => {
   it('Debería retornar "true" si la ruta es válida', () => {
-    expect(validatePath(testPath)).toBe(true);
+    expect(utilFunctions.validatePath(testPath)).toBe(true);
     // expect(validatePath('ffhg')).toBe(false);
   });
 });
 
 describe('pathIsFile', () => {
   it('Debería retornar "true" si la ruta corresponde a un archivo', () => {
-    expect(pathIsFile('./src/index.js')).toBe(true);
+    expect(utilFunctions.pathIsFile('./src/index.js')).toBe(true);
+  });
+});
+
+describe('getExtension', () => {
+  it('Debería retornar ".js"', () => {
+    expect(utilFunctions.getExtension('./src/index.js')).toBe('.js');
   });
 });
 
 // describe('httpRequest', () => {
-// eslint-disable-next-line max-len
-//   it('Debería retornar una promesa donde se resuelve el status del link', (done) => httpRequest('')
-//     .then((response) => {
-//       expect((response.status)).toBe(200);
-//       done();
-//     }));
-// });
-
-// describe('getLinks', () => {
-// eslint-disable-next-line max-len
-//   it('Debería retornar un array con los links encontrados o un array vacío si no hay links', () => {
-//     expect(allLinks(mdPath)).toEqual(testArray);
-//     expect(allLinks(mdEmpty)).toEqual([]);
+//   it('Debería retornar el status del link', (done) => {
+//     moxios.utilFunctions.httpRequest(testPath, {
+//       status: 200,
+//       responseText: 'holi',
+//     });
+//     let onFulfilled = sinon.spy();
+//     axios.get
 //   });
 // });
+
+describe('getLinks', () => {
+  it('Debería retornar un array con los links encontrados o un array vacío si no hay links', (done) => Promise.all(utilFunctions.getLinks(mdPath, { validate: true }))
+    .then((res) => {
+      expect(res).toEqual([
+        {
+          href: 'https://en.wikipedia.org/wiki/Caesar_cipher',
+          text: 'cifrado César',
+          file: mdPath,
+          status: 200,
+          statusText: 'OK',
+        },
+        {
+          href: 'https://medium.com/laboratoria-how-to/vanillajs-vs-jquery-31e623bbd46e',
+          text: 'vanilla JavaScript',
+          file: mdPath,
+          status: 200,
+          statusText: 'OK',
+        },
+        {
+          href: 'https://jestjs.io/es-ES/',
+          text: 'Jest',
+          file: mdPath,
+          status: 200,
+          statusText: 'OK',
+        },
+      ]);
+      done();
+      // expect(utilFunctions.getLinks('./folder/empty.md', { validate: true })).toEqual([]);
+      // expect(utilFunctions.getLinks(mdPath, { validate: false })).toEqual([
+      //   {
+      //     href: 'https://en.wikipedia.org/wiki/Caesar_cipher',
+      //     text: 'cifrado César',
+      //     file: mdPath,
+      //   },
+      //   {
+      //     href: 'https://medium.com/laboratoria-how-to/vanillajs-vs-jquery-31e623bbd46e',
+      //     text: 'vanilla JavaScript',
+      //     file: mdPath,
+      //   },
+      //   {
+      //     href: 'https://jestjs.io/es-ES/',
+      //     text: 'Jest',
+      //     file: mdPath,
+      //   },
+      // ]);
+    }));
+});
+
+describe('getMdFiles', () => {
+  it('Debería retornar un array con los archivos markdown', () => {
+    expect(utilFunctions.getMdFiles('./folder/anotherFolder/')).toEqual([mdPath]);
+  });
+});
