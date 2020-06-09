@@ -13,11 +13,11 @@ const validatePath = (newPath) => fs.existsSync(newPath);
 
 const pathIsFile = (newPath) => fs.statSync(newPath).isFile();
 
-const getExtension = (newPath) => path.extname(newPath);
+const getExtension = (newPath) => (path.extname(newPath) === '.md');
 
 const httpRequest = (link) => axios.get(link);
 
-const getLinks = (newPath, options) => {
+const getLinks = (newPath/* , options */) => {
   // Obtener el contenido del archivo y pasarlo a string
   const mdStringContent = fs.readFileSync(newPath).toString();
   // Convertir contenido del archivo .md a html
@@ -32,33 +32,39 @@ const getLinks = (newPath, options) => {
   arrayOfAnchor.forEach((element) => {
     const link = element.getAttribute('href');
     if (link.indexOf('http') !== -1) {
-      if (options.validate) {
-        const obj = httpRequest(link).then((res) => ({
-          href: link,
-          text: element.textContent,
-          file: newPath,
-          status: res.status,
-          statusText: res.statusText,
-        })).catch((err) => ({
-          href: link,
-          text: element.textContent,
-          file: newPath,
-          status: err.code,
-          statusText: 'FAIL',
-        }));
-        arr.push(obj);
-      } else {
-        const obj = {
-          href: link,
-          text: element.textContent,
-          file: newPath,
-        };
-        arr.push(obj);
-      }
+      const obj = {
+        href: link,
+        text: element.textContent,
+        file: newPath,
+      };
+      arr.push(obj);
     }
+  });
+
+  return arr;
+};
+
+const getStatus = (route) => {
+  const arr = [];
+
+  getLinks(route).forEach((element) => {
+    const obj = httpRequest(element.href).then((res) => ({
+      ...element,
+      status: res.status,
+      statusText: res.statusText,
+    })).catch((err) => ({
+      ...element,
+      status: err.code,
+      statusText: 'FAIL',
+    }));
+    arr.push(obj);
   });
   return arr;
 };
+
+// getStatus('./README.md', { validate: true }).then((res) => {
+//   console.log(res);
+// });
 
 // Promise.all(getLinks('./folder/anotherFolder/README.md', { validate: true })).then((res) => {
 //   console.log(res);
@@ -68,7 +74,7 @@ const getMdFiles = (route) => {
   const arrOfFiles = [];
   const newPath = absolutePath(route);
   if (pathIsFile(newPath)) {
-    if (getExtension(newPath) === '.md') {
+    if (getExtension(newPath)) {
       arrOfFiles.push(newPath);
     }
   } else {
@@ -88,4 +94,5 @@ module.exports = {
   getLinks,
   httpRequest,
   getMdFiles,
+  getStatus,
 };
