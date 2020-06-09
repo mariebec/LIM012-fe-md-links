@@ -6,10 +6,10 @@ const mdLinks = (userPath, options) => new Promise((resolve, reject) => {
 
     let arrOfLinks = [];
     if (utilFunctions.pathIsFile(absPath) && utilFunctions.getExtension(absPath) === '.md') {
-      arrOfLinks = utilFunctions.getLinks(absPath, userPath, options);
+      arrOfLinks = utilFunctions.getLinks(absPath, options);
     } else {
       utilFunctions.getMdFiles(absPath).forEach((element) => {
-        const arr = utilFunctions.getLinks(element, element, options);
+        const arr = utilFunctions.getLinks(element, options);
         arrOfLinks.push(...arr);
       });
     }
@@ -21,10 +21,10 @@ const mdLinks = (userPath, options) => new Promise((resolve, reject) => {
 });
 
 
-// mdLinks('./folder/empty.md', { validate: true }).then((res) => {
-//   console.log(res);
-// }).catch((err) => {
-//   console.log(err.message);
-// });
+mdLinks('./folder/', { validate: true }).then((res) => {
+  console.log(res);
+}).catch((err) => {
+  console.log(err.message);
+});
 
 module.exports = mdLinks;
