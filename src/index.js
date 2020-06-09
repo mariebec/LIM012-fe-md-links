@@ -17,7 +17,7 @@ const getExtension = (newPath) => path.extname(newPath);
 
 const httpRequest = (link) => axios.get(link);
 
-const getLinks = (newPath, userPath, options) => {
+const getLinks = (newPath, options) => {
   // Obtener el contenido del archivo y pasarlo a string
   const mdStringContent = fs.readFileSync(newPath).toString();
   // Convertir contenido del archivo .md a html
@@ -57,11 +57,12 @@ const getLinks = (newPath, userPath, options) => {
       }
     }
   });
-
   return arr;
 };
 
-// console.log(Promise.all(getLinks('./folder/anotherFolder/README.md', { validate: true })));
+// Promise.all(getLinks('./folder/anotherFolder/README.md', { validate: true })).then((res) => {
+//   console.log(res);
+// });
 
 const getMdFiles = (route) => {
   const arrOfFiles = [];
