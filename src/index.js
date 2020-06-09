@@ -26,42 +26,46 @@ const getLinks = (newPath, userPath, options) => {
   const dom = new JSDOM(mdHtmlContent);
   const nodeList = dom.window.document.querySelectorAll('a');
   const arrayOfAnchor = Array.from(nodeList);
+
   const arr = [];
 
-  if (options.validate) {
-    arrayOfAnchor.forEach((element) => {
-      arr.push(httpRequest(element.href)
-        .then((response) => ({
-          href: element.getAttribute('href'),
+  arrayOfAnchor.forEach((element) => {
+    const link = element.getAttribute('href');
+    if (link.indexOf('http') !== -1) {
+      if (options.validate) {
+        const obj = httpRequest(link).then((res) => ({
+          href: link,
           text: element.textContent,
-          file: userPath,
-          status: response.status,
-          statusText: response.statusText,
-        }))
-        .catch(() => ({
-          href: element.getAttribute('href'),
+          file: newPath,
+          status: res.status,
+          statusText: res.statusText,
+        })).catch((err) => ({
+          href: link,
           text: element.textContent,
-          file: userPath,
-          status: 'nose',
-          statusText: 'Fail',
-        })));
-    });
-  } else {
-    arrayOfAnchor.forEach((element) => {
-      const obj = {
-        href: element.getAttribute('href'),
-        text: element.textContent,
-        file: userPath,
-      };
-      arr.push(obj);
-    });
-  }
+          file: newPath,
+          status: err.code,
+          statusText: 'FAIL',
+        }));
+        arr.push(obj);
+      } else {
+        const obj = {
+          href: link,
+          text: element.textContent,
+          file: newPath,
+        };
+        arr.push(obj);
+      }
+    }
+  });
 
   return arr;
 };
 
-const getMdFiles = (newPath) => {
+// console.log(Promise.all(getLinks('./folder/anotherFolder/README.md', { validate: true })));
+
+const getMdFiles = (route) => {
   const arrOfFiles = [];
+  const newPath = absolutePath(route);
   if (pathIsFile(newPath)) {
     if (getExtension(newPath) === '.md') {
       arrOfFiles.push(newPath);
@@ -74,7 +78,6 @@ const getMdFiles = (newPath) => {
   }
   return arrOfFiles;
 };
-
 
 module.exports = {
   absolutePath,
