@@ -37,7 +37,7 @@ describe('pathIsFile', () => {
 
 describe('getExtension', () => {
   it('Debería retornar ".js"', () => {
-    expect(utilFunctions.getExtension('./src/index.js')).toBe('.js');
+    expect(utilFunctions.getExtension('./src/index.js')).toBe(false);
   });
 });
 
@@ -53,51 +53,62 @@ describe('getExtension', () => {
 // });
 
 describe('getLinks', () => {
-  it('Debería retornar un array con los links encontrados o un array vacío si no hay links', (done) => Promise.all(utilFunctions.getLinks(mdPath, { validate: true }))
-    .then((res) => {
-      expect(res).toEqual([
-        {
-          href: 'https://en.wikipedia.org/wiki/Caesar_cipher',
-          text: 'cifrado César',
-          file: mdPath,
-          status: 200,
-          statusText: 'OK',
-        },
-        {
-          href: 'https://medium.com/laboratoria-how-to/vanillajs-vs-jquery-31e623bbd46e',
-          text: 'vanilla JavaScript',
-          file: mdPath,
-          status: 200,
-          statusText: 'OK',
-        },
-        {
-          href: 'https://jestjs.io/es-ES/',
-          text: 'Jest',
-          file: mdPath,
-          status: 200,
-          statusText: 'OK',
-        },
-      ]);
-      done();
-      // expect(utilFunctions.getLinks('./folder/empty.md', { validate: true })).toEqual([]);
-      // expect(utilFunctions.getLinks(mdPath, { validate: false })).toEqual([
-      //   {
-      //     href: 'https://en.wikipedia.org/wiki/Caesar_cipher',
-      //     text: 'cifrado César',
-      //     file: mdPath,
-      //   },
-      //   {
-      //     href: 'https://medium.com/laboratoria-how-to/vanillajs-vs-jquery-31e623bbd46e',
-      //     text: 'vanilla JavaScript',
-      //     file: mdPath,
-      //   },
-      //   {
-      //     href: 'https://jestjs.io/es-ES/',
-      //     text: 'Jest',
-      //     file: mdPath,
-      //   },
-      // ]);
-    }));
+  it('Debería retornar un array con los links encontrados', () => {
+    expect(utilFunctions.getLinks(mdPath)).toEqual([
+      {
+        href: 'https://en.wikipedia.org/wiki/Caesar_cipher',
+        text: 'cifrado César',
+        file: mdPath,
+      },
+      {
+        href: 'https://medium.com/laboratoria-how-to/vanillajs-vs-jquery-31e623bbd46e',
+        text: 'vanilla JavaScript',
+        file: mdPath,
+      },
+      {
+        href: 'https://jestjs.io/es-ES/',
+        text: 'Jest',
+        file: mdPath,
+      },
+    ]);
+    // expect(utilFunctions.getLinks('./folder/empty.md', { validate: true })).toEqual([]);
+  });
+});
+
+describe('getStatus', () => {
+  it('Debería retornar un array con los links encontrados y el status', (/* done */) => Promise.all(utilFunctions.getStatus(mdPath)).then((res) => {
+    expect(res).toEqual([
+      {
+        href: 'https://en.wikipedia.org/wiki/Caesar_cipher',
+        text: 'cifrado César',
+        file: mdPath,
+        status: 200,
+        statusText: 'OK',
+      },
+      {
+        href: 'https://medium.com/laboratoria-how-to/vanillajs-vs-jquery-31e623bbd46e',
+        text: 'vanilla JavaScript',
+        file: mdPath,
+        status: 200,
+        statusText: 'OK',
+      },
+      {
+        href: 'https://firebasestorage.googleapis.com/v0/b/voz-amiga.appspot.com/o/imagePhotoProfile%2F5HL0M8YKp8VQbJ7ot8yzdiIbk9m2%2FIMG_20190707_150320%20(2).jpg?alt=media&token=292d01f8-39fe-498f-8d4e-79d43879a742',
+        text: 'Link sin acceso por seguridad',
+        file: mdPath,
+        status: 403,
+        statusText: 'Forbidden',
+      },
+      {
+        href: 'https://carlosazaustre.com/manejando-la-asincronia-en-javascript/',
+        text: 'Error',
+        file: mdPath,
+        status: 'ECONNREFUSED',
+        statusText: 'FAIL',
+      },
+    ]);
+    // done();
+  }));
 });
 
 describe('getMdFiles', () => {
