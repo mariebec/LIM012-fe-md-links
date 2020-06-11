@@ -1,4 +1,4 @@
-const utilFunctions = require('./index');
+const utilFunctions = require('./utils');
 
 const mdLinks = (userPath, options) => new Promise((resolve, reject) => {
   if (utilFunctions.validatePath(userPath)) {
@@ -24,7 +24,7 @@ const mdLinks = (userPath, options) => new Promise((resolve, reject) => {
 });
 
 
-// mdLinks('./folder', { validate: true }).then((res) => {
+// mdLinks('./folder/anotherFolder/README.md', { validate: true }).then((res) => {
 //   console.log(res);
 // }).catch((err) => {
 //   console.log(err.message);
