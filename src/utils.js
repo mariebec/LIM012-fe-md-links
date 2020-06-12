@@ -16,30 +16,46 @@ const getExtension = (newPath) => (path.extname(newPath) === '.md');
 
 const httpRequest = (link) => axios.get(link);
 
-const getLinks = (newPath) => {
-  // Obtener el contenido del archivo y pasarlo a string
-  const mdStringContent = fs.readFileSync(newPath).toString();
-  // Convertir contenido del archivo .md a html
-  const mdHtmlContent = marked(mdStringContent);
-  // Extraer los links con jsdom
-  const dom = new JSDOM(mdHtmlContent);
-  const nodeList = dom.window.document.querySelectorAll('a');
-  const arrayOfAnchor = Array.from(nodeList);
-
-  const arr = [];
-
-  arrayOfAnchor.forEach((element) => {
-    const link = element.getAttribute('href');
-    if (link.indexOf('http') !== -1) {
-      const obj = {
-        href: link,
-        text: element.textContent,
-        file: newPath,
-      };
-      arr.push(obj);
+const getMdFiles = (route) => {
+  const arrOfFiles = [];
+  const newPath = absolutePath(route);
+  if (pathIsFile(newPath)) {
+    if (getExtension(newPath)) {
+      arrOfFiles.push(newPath);
     }
-  });
+  } else {
+    fs.readdirSync(newPath).forEach((element) => {
+      const arr = getMdFiles(path.join(newPath, element));
+      arrOfFiles.push(...arr);
+    });
+  }
+  return arrOfFiles;
+};
 
+const getLinks = (newPath) => {
+  const arr = [];
+  getMdFiles(newPath).forEach((eachPath) => {
+    // Obtener el contenido del archivo y pasarlo a string
+    const mdStringContent = fs.readFileSync(eachPath).toString();
+    // Convertir contenido del archivo .md a html
+    const mdHtmlContent = marked(mdStringContent);
+    // Extraer los links con jsdom
+    const dom = new JSDOM(mdHtmlContent);
+    const nodeList = dom.window.document.querySelectorAll('a');
+    const arrayOfAnchor = Array.from(nodeList);
+
+    arrayOfAnchor.forEach((element) => {
+      const link = element.getAttribute('href');
+      if (link.indexOf('http') !== -1) {
+        const obj = {
+          href: link,
+          text: element.textContent,
+          file: eachPath,
+        };
+        arr.push(obj);
+      }
+    });
+  });
   return arr;
 };
 
@@ -67,8 +83,8 @@ const getStatus = (route) => {
     });
     arr.push(obj);
   });
-  // return Promise.all(arr);
-  return arr;
+  return Promise.all(arr);
+  // return arr;
 };
 
 // getStatus('./README.md').then((res) => {
@@ -79,21 +95,6 @@ const getStatus = (route) => {
 //   console.log(res);
 // });
 
-const getMdFiles = (route) => {
-  const arrOfFiles = [];
-  const newPath = absolutePath(route);
-  if (pathIsFile(newPath)) {
-    if (getExtension(newPath)) {
-      arrOfFiles.push(newPath);
-    }
-  } else {
-    fs.readdirSync(newPath).forEach((element) => {
-      const arr = getMdFiles(path.join(newPath, element));
-      arrOfFiles.push(...arr);
-    });
-  }
-  return arrOfFiles;
-};
 
 module.exports = {
   absolutePath,
