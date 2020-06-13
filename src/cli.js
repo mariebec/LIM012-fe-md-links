@@ -3,36 +3,54 @@
 
 const mdlinks = require('./mdlinks');
 
-if (process.argv.length === 2) {
+const terminalInput = process.argv;
+const validateOp = terminalInput.includes('--validate') || terminalInput.includes('--v');
+const statOp = terminalInput.includes('--stat') || terminalInput.includes('--s');
+
+
+if (terminalInput.length < 3) {
   console.log('Ingrese una ruta');
-} else if (process.argv.length === 3) {
+} else {
   const route = process.argv[2];
-  mdlinks(route, { validate: false }).then((res) => {
-    console.log(res);
-  }).catch((err) => {
-    console.log(err.message);
-  });
-} else if (process.argv.length === 4 && process.argv[3] === '--validate') {
-  const route = process.argv[2];
-  mdlinks(route, { validate: true }).then((res) => {
-    console.log(res);
-  }).catch((err) => {
-    console.log(err.message);
-  });
-} else if (process.argv.length === 4 && process.argv[3] === '--stat') {
-  const route = process.argv[2];
-  mdlinks(route, { validate: true }).then((res) => {
-    const arr = res;
-    const result = arr.reduce((sum, element) => {
-      if (element.status !== 200) sum += 1;
-      return sum;
-    }, 0);
-    console.log(`
-    Total: ${arr.length}
-    Unique: ${arr.length}
-    Broken: ${result}
-    `);
-  }).catch((err) => {
-    console.log(err.message);
-  });
+
+  if (terminalInput.length === 3) {
+    mdlinks(route, { validate: false }).then((res) => {
+      res.forEach((element) => {
+        console.log(`${element.href} ${element.text}`);
+      });
+    }).catch((err) => {
+      console.log(`${err.message}`);
+    });
+  } else if (terminalInput.length > 3) {
+    if (validateOp && statOp) {
+      mdlinks(route, { validate: true }).then((res) => {
+        const arr = res.map(((element) => element.href));
+        const unique = new Set(arr).size;
+        const result = res.reduce((sum, element) => {
+          // eslint-disable-next-line no-param-reassign
+          if (element.status > 399 || typeof element.status === 'string') sum += 1;
+          return sum;
+        }, 0);
+        console.log(`Total: ${arr.length}\nUnique: ${unique}\nBroken: ${result}`);
+      }).catch((err) => {
+        console.log(err.message);
+      });
+    } else if (statOp) {
+      mdlinks(route, { validate: true }).then((res) => {
+        const arr = res.map(((element) => element.href));
+        const unique = new Set(arr).size;
+        console.log(`Total: ${arr.length}\nUnique: ${unique}`);
+      }).catch((err) => {
+        console.log(err.message);
+      });
+    } else if (validateOp) {
+      mdlinks(route, { validate: true }).then((res) => {
+        res.forEach((element) => {
+          console.log(`${element.href} ${element.statusText} ${element.status} ${element.text}`);
+        });
+      }).catch((err) => {
+        console.log(err.message);
+      });
+    }
+  }
 }
