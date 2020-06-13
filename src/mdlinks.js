@@ -19,11 +19,4 @@ const mdLinks = (userPath, options) => new Promise((resolve, reject) => {
   }
 });
 
-
-// mdLinks('./folder', { validate: true }).then((res) => {
-//   console.log(res);
-// }).catch((err) => {
-//   console.log(err.message);
-// });
-
 module.exports = mdLinks;
