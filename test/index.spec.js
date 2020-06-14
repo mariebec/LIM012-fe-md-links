@@ -1,10 +1,11 @@
 const path = require('path');
 // const moxios = require('moxios');
-
-const utilFunctions = require('../src/index');
+const axios = require('axios');
+const utilFunctions = require('../src/utils');
+axios.defaults.adapter = require('axios/lib/adapters/http');
 
 const testPath = path.resolve('./src/');
-const mdPath = path.resolve('./folder/anotherFolder/README.md');
+const mdPath = path.resolve('./test/folder/anotherFolder/README.md');
 
 // describe('mdLinksApi', () => {
 // eslint-disable-next-line max-len
@@ -31,26 +32,15 @@ describe('validatePath', () => {
 
 describe('pathIsFile', () => {
   it('Debería retornar "true" si la ruta corresponde a un archivo', () => {
-    expect(utilFunctions.pathIsFile('./src/index.js')).toBe(true);
+    expect(utilFunctions.pathIsFile('./src/utils.js')).toBe(true);
   });
 });
 
 describe('getExtension', () => {
   it('Debería retornar ".js"', () => {
-    expect(utilFunctions.getExtension('./src/index.js')).toBe(false);
+    expect(utilFunctions.getExtension('./src/utils.js')).toBe(false);
   });
 });
-
-// describe('httpRequest', () => {
-//   it('Debería retornar el status del link', (done) => {
-//     moxios.utilFunctions.httpRequest(testPath, {
-//       status: 200,
-//       responseText: 'holi',
-//     });
-//     let onFulfilled = sinon.spy();
-//     axios.get
-//   });
-// });
 
 describe('getLinks', () => {
   it('Debería retornar un array con los links encontrados', () => {
@@ -66,8 +56,13 @@ describe('getLinks', () => {
         file: mdPath,
       },
       {
-        href: 'https://jestjs.io/es-ES/',
-        text: 'Jest',
+        href: 'https://www.facebook.com/photo.php?fbid=10216219635191680&set=g.410918248922046&type=1&theater&ifg=1',
+        text: 'Imagen facebook',
+        file: mdPath,
+      },
+      {
+        href: 'https://carlosazaustre.com/manejando-la-asincronia-en-javascript/',
+        text: 'Asincronía en Javascript',
         file: mdPath,
       },
     ]);
@@ -76,7 +71,7 @@ describe('getLinks', () => {
 });
 
 describe('getStatus', () => {
-  it('Debería retornar un array con los links encontrados y el status', (/* done */) => Promise.all(utilFunctions.getStatus(mdPath)).then((res) => {
+  it('Debería retornar un array con los links encontrados y el status', (done) => utilFunctions.getStatus(mdPath).then((res) => {
     expect(res).toEqual([
       {
         href: 'https://en.wikipedia.org/wiki/Caesar_cipher',
@@ -93,26 +88,26 @@ describe('getStatus', () => {
         statusText: 'OK',
       },
       {
-        href: 'https://firebasestorage.googleapis.com/v0/b/voz-amiga.appspot.com/o/imagePhotoProfile%2F5HL0M8YKp8VQbJ7ot8yzdiIbk9m2%2FIMG_20190707_150320%20(2).jpg?alt=media&token=292d01f8-39fe-498f-8d4e-79d43879a742',
-        text: 'Link sin acceso por seguridad',
+        href: 'https://www.facebook.com/photo.php?fbid=10216219635191680&set=g.410918248922046&type=1&theater&ifg=1',
+        text: 'Imagen facebook',
         file: mdPath,
-        status: 403,
-        statusText: 'Forbidden',
+        status: 404,
+        statusText: 'Not Found',
       },
       {
         href: 'https://carlosazaustre.com/manejando-la-asincronia-en-javascript/',
-        text: 'Error',
+        text: 'Asincronía en Javascript',
         file: mdPath,
         status: 'ECONNREFUSED',
         statusText: 'FAIL',
       },
     ]);
-    // done();
+    done();
   }));
 });
 
 describe('getMdFiles', () => {
   it('Debería retornar un array con los archivos markdown', () => {
-    expect(utilFunctions.getMdFiles('./folder/anotherFolder/')).toEqual([mdPath]);
+    expect(utilFunctions.getMdFiles('./test/folder/anotherFolder/')).toEqual([mdPath]);
   });
 });
