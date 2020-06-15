@@ -1,3 +1,4 @@
+const chalk = require('chalk');
 const utilFunctions = require('./utils');
 
 const mdLinks = (userPath, options) => new Promise((resolve, reject) => {
@@ -6,7 +7,7 @@ const mdLinks = (userPath, options) => new Promise((resolve, reject) => {
 
     let arrOfLinks = [];
     if (utilFunctions.pathIsFile(absPath) && !utilFunctions.getExtension(absPath)) {
-      reject(new Error('No se encontró archivos markdown'));
+      reject(new Error(`\nNo se encontró archivos markdown en ${chalk.yellow(userPath)}`));
     } else if (options.validate) {
       arrOfLinks = utilFunctions.getStatus(absPath);
       resolve(arrOfLinks);
@@ -15,7 +16,7 @@ const mdLinks = (userPath, options) => new Promise((resolve, reject) => {
       resolve(arrOfLinks);
     }
   } else {
-    reject(new Error('Ruta no válida'));
+    reject(new Error(`\nLa ruta ${chalk.yellow(userPath)} no es válida`));
   }
 });
 
