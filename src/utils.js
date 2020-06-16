@@ -14,8 +14,6 @@ const pathIsFile = (newPath) => fs.statSync(newPath).isFile();
 
 const getExtension = (newPath) => (path.extname(newPath) === '.md');
 
-const httpRequest = (link) => axios.get(link);
-
 const getMdFiles = (route) => {
   const arrOfFiles = [];
   const newPath = absolutePath(route);
@@ -59,6 +57,8 @@ const getLinks = (newPath) => {
   return arr;
 };
 
+const httpRequest = (link) => axios.get(link);
+
 const getStatus = (route) => {
   const arr = [];
 
@@ -84,17 +84,7 @@ const getStatus = (route) => {
     arr.push(obj);
   });
   return Promise.all(arr);
-  // return arr;
 };
-
-// getStatus('./README.md').then((res) => {
-//   console.log(res);
-// });
-
-// Promise.all(getLinks('./folder/anotherFolder/README.md', { validate: true })).then((res) => {
-//   console.log(res);
-// });
-
 
 module.exports = {
   absolutePath,
