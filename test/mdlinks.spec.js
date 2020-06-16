@@ -1,20 +1,20 @@
 const path = require('path');
-const axios = require('axios');
-const MockAdapter = require('axios-mock-adapter');
 const chalk = require('chalk');
+const mockAxios = require('axios');
 const mdLinks = require('../src/mdlinks');
 
 const mdPath = path.resolve('./test/folder/anotherFolder/oneLink.md');
 const jsPath = path.resolve('./test/folder/example.js');
-// const testArrayStatus = [
-//   {
-//     href: 'https://www.google.com/',
-//     text: 'Google',
-//     file: mdPath,
-//     status: 200,
-//     statusText: 'OK',
-//   },
-// ];
+
+const testArrayStatus = [
+  {
+    href: 'https://www.google.com/',
+    text: 'Google',
+    file: mdPath,
+    status: 200,
+    statusText: 'OK',
+  },
+];
 
 const testArray = [
   {
@@ -24,15 +24,16 @@ const testArray = [
   },
 ];
 
-const mock = new MockAdapter(axios);
-mock.onGet('https://www.google.com/').reply(200);
-
 describe('mdLinksApi', () => {
-  it('Debería retornar un array con los status de los links', (done) => mdLinks(mdPath, { validate: true })
-    .then((res) => {
-      expect(res[0].status).toBe(200);
-      done();
-    }));
+  it('Debería retornar un array con los status de los links', (done) => {
+    mockAxios.get.mockImplementationOnce(() => Promise.resolve({ status: 200, statusText: 'OK' }));
+
+    mdLinks(mdPath, { validate: true })
+      .then((res) => {
+        expect(res).toEqual(testArrayStatus);
+        done();
+      });
+  });
 
   it('Debería retornar un array de los links', (done) => mdLinks(mdPath, { validate: false })
     .then((res) => {
