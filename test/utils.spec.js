@@ -1,6 +1,6 @@
+/* eslint-disable max-len */
 const path = require('path');
-const axios = require('axios');
-const MockAdapter = require('axios-mock-adapter');
+const mockAxios = require('axios');
 const utilFunctions = require('../src/utils');
 
 const testPath = path.resolve('./src/');
@@ -67,19 +67,59 @@ describe('getLinks', () => {
   });
 });
 
-const mock = new MockAdapter(axios);
-mock.onGet('https://www.google.com/').reply(200);
-
-describe('httpRequest', () => {
-  it('Debería retornar un array con los links encontrados y el status', (done) => utilFunctions.httpRequest('https://www.google.com/').then((res) => {
-    expect(res.status).toBe(200);
-    done();
-  }));
-});
+// Jest mock
 
 describe('getStatus', () => {
-  it('Debería retornar un array con los links encontrados y el status', (done) => utilFunctions.getStatus(mdGoogle).then((res) => {
-    expect(res[0].status).toBe(200);
-    done();
-  }));
+  it('Debería retornar un array con los links encontrados y el status OK', (done) => {
+    mockAxios.get.mockImplementationOnce(() => Promise.resolve({ status: 200, statusText: 'OK' }));
+
+    utilFunctions.getStatus(mdGoogle).then((res) => {
+      expect(res).toEqual([
+        {
+          href: 'https://www.google.com/',
+          text: 'Google',
+          file: mdGoogle,
+          status: 200,
+          statusText: 'OK',
+        },
+      ]);
+      done();
+    });
+  });
+
+  it('Debería retornar un array con los links encontrados y el status Not Found', (done) => {
+    // eslint-disable-next-line prefer-promise-reject-errors
+    mockAxios.get.mockImplementationOnce(() => Promise.reject({ response: { status: 404, statusText: 'Not Found' } }));
+
+    utilFunctions.getStatus(mdGoogle).then((res) => {
+      expect(res).toEqual([
+        {
+          href: 'https://www.google.com/',
+          text: 'Google',
+          file: mdGoogle,
+          status: 404,
+          statusText: 'Not Found',
+        },
+      ]);
+      done();
+    });
+  });
+
+  it('Debería retornar un array con los links encontrados y el Error', (done) => {
+    // eslint-disable-next-line prefer-promise-reject-errors
+    mockAxios.get.mockImplementationOnce(() => Promise.reject({ code: 'Error' }));
+
+    utilFunctions.getStatus(mdGoogle).then((err) => {
+      expect(err).toEqual([
+        {
+          href: 'https://www.google.com/',
+          text: 'Google',
+          file: mdGoogle,
+          status: 'Error',
+          statusText: 'FAIL',
+        },
+      ]);
+      done();
+    });
+  });
 });
