@@ -5,15 +5,7 @@ const utilFunctions = require('../src/utils');
 
 const testPath = path.resolve('./src/');
 const mdPath = path.resolve('./test/folder/anotherFolder/README.md');
-
-// describe('mdLinksApi', () => {
-// eslint-disable-next-line max-len
-//   it('Debería retornar una promesa con un array en resolve', (done) => mdLinksApi(mdPath, { validate: true })
-//     .then(() => {
-//       expect(mdPath).toEqual(validArray);
-//       done();
-//     }));
-// });
+const mdGoogle = path.resolve('./test/folder/anotherFolder/oneLink.md');
 
 describe('absolutePath', () => {
   it('Debería retornar una ruta absoluta', () => {
@@ -43,7 +35,7 @@ describe('getExtension', () => {
 
 describe('getMdFiles', () => {
   it('Debería retornar un array con los archivos markdown', () => {
-    expect(utilFunctions.getMdFiles('./test/folder/anotherFolder/')).toEqual([mdPath]);
+    expect(utilFunctions.getMdFiles('./test/folder/anotherFolder/')).toEqual([mdPath, mdGoogle]);
   });
 });
 
@@ -75,12 +67,19 @@ describe('getLinks', () => {
   });
 });
 
+const mock = new MockAdapter(axios);
+mock.onGet('https://www.google.com/').reply(200);
+
 describe('httpRequest', () => {
-  const mock = new MockAdapter(axios);
-  const data = { status: 200, statusText: 'OK' };
-  mock.onGet('link').reply(200, data);
-  it('Debería retornar un array con los links encontrados y el status', (done) => utilFunctions.httpRequest('link').then((res) => {
-    expect(res.data.statusText).toBe('OK');
+  it('Debería retornar un array con los links encontrados y el status', (done) => utilFunctions.httpRequest('https://www.google.com/').then((res) => {
+    expect(res.status).toBe(200);
+    done();
+  }));
+});
+
+describe('getStatus', () => {
+  it('Debería retornar un array con los links encontrados y el status', (done) => utilFunctions.getStatus(mdGoogle).then((res) => {
+    expect(res[0].status).toBe(200);
     done();
   }));
 });
