@@ -57,13 +57,11 @@ const getLinks = (newPath) => {
   return arr;
 };
 
-const httpRequest = (link) => axios.get(link);
-
 const getStatus = (route) => {
   const arr = [];
 
   getLinks(route).forEach((element) => {
-    const obj = httpRequest(element.href).then((res) => ({
+    const obj = axios.get(element.href).then((res) => ({
       ...element,
       status: res.status,
       statusText: res.statusText,
@@ -92,7 +90,6 @@ module.exports = {
   validatePath,
   getExtension,
   getLinks,
-  httpRequest,
   getMdFiles,
   getStatus,
 };
