@@ -36,7 +36,10 @@ if (terminalInput.length < 3) {
   } else if (terminalInput.length === 3) {
     mdlinks(route, { validate: false }).then((res) => {
       res.forEach((element) => {
-        console.table(`${element.text}: ${chalk.blue(element.href)}`);
+        const index = element.file.indexOf(route.replace('.', ''));
+        const mdPath = element.file.slice(index, element.file.length);
+        const text = (element.text.length > 50) ? element.text.slice(0, 51) : element.text;
+        console.log(`${mdPath} ${chalk.blue(element.href)} ${text}`);
       });
     }).catch((err) => {
       console.log(`${err.message}`);
@@ -66,6 +69,8 @@ if (terminalInput.length < 3) {
     } else if (validateOp && terminalInput.length === 4) {
       mdlinks(route, { validate: true }).then((res) => {
         res.forEach((element) => {
+          const index = element.file.indexOf(route.replace('.', ''));
+          const mdPath = element.file.slice(index, element.file.length);
           let status;
           let statusText;
           if (element.status < 300) {
@@ -78,7 +83,8 @@ if (terminalInput.length < 3) {
             status = chalk.red(element.status);
             statusText = chalk.red(element.statusText);
           }
-          console.log(`${element.text}: ${chalk.blue(element.href)} ${statusText} ${status}`);
+          const text = (element.text.length > 50) ? element.text.slice(0, 51) : element.text;
+          console.log(`${mdPath} ${chalk.blue(element.href)} ${statusText} ${status} ${text}`);
         });
       }).catch((err) => {
         console.log(err.message);
