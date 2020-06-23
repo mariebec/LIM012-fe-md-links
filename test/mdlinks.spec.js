@@ -3,8 +3,8 @@ const chalk = require('chalk');
 const mockAxios = require('axios');
 const mdLinks = require('../src/mdlinks');
 
-const mdPath = path.resolve('./test/folder/anotherFolder/oneLink.md');
-const jsPath = path.resolve('./test/folder/example.js');
+const mdPath = path.resolve('./test/dir/anotherDir/oneLink.md');
+const jsPath = path.resolve('./test/dir/example.js');
 
 const testArrayStatus = [
   {
@@ -43,13 +43,13 @@ describe('mdLinksApi', () => {
 
   it('Debería retornar que no se encontró archivos md', (done) => mdLinks(jsPath, { validate: false })
     .catch((err) => {
-      expect(err.message).toBe(`\nNo se encontró archivos markdown en ${chalk.yellow(jsPath)}`);
+      expect(err.message).toBe(`\nThere are not md files in ${chalk.yellow(jsPath)}`);
       done();
     }));
 
   it('Debería retornar que la ruta no es válida', (done) => mdLinks('invalidPath', { validate: false })
     .catch((err) => {
-      expect(err.message).toBe(`\nLa ruta ${chalk.yellow('invalidPath')} no es válida`);
+      expect(err.message).toBe(`\nPath ${chalk.yellow('invalidPath')} is not valid`);
       done();
     }));
 });
