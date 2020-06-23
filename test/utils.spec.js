@@ -4,8 +4,8 @@ const mockAxios = require('axios');
 const utilFunctions = require('../src/utils');
 
 const testPath = path.resolve('./src/');
-const mdPath = path.resolve('./test/folder/anotherFolder/README.md');
-const mdGoogle = path.resolve('./test/folder/anotherFolder/oneLink.md');
+const mdPath = path.resolve('./test/dir/anotherDir/README.md');
+const mdGoogle = path.resolve('./test/dir/anotherDir/oneLink.md');
 
 describe('absolutePath', () => {
   it('Debería retornar una ruta absoluta', () => {
@@ -35,7 +35,7 @@ describe('getExtension', () => {
 
 describe('getMdFiles', () => {
   it('Debería retornar un array con los archivos markdown', () => {
-    expect(utilFunctions.getMdFiles('./test/folder/anotherFolder/')).toEqual([mdPath, mdGoogle]);
+    expect(utilFunctions.getMdFiles('./test/dir/anotherDir/')).toEqual([mdPath, mdGoogle]);
   });
 });
 
