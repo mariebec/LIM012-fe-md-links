@@ -4,16 +4,6 @@
 
 md-links es una herramienta que lee y analiza archivos en formato `Markdown`, para verificar los links que contiene y realizar estadísticas.
 
-## Diagrama de flujo
-
-### API
-
-![Api Flowchart](/img/api-flowchart.jpg)
-
-### CLI
-
-![Api Flowchart](/img/cli-flowchart.jpg)
-
 ## Cómo instalar
 
 Para instalar la librería y el módulo
@@ -58,8 +48,6 @@ mdLinks("./some/dir", { validate: false })
   })
   .catch(console.error);
 ```
-
-
 
 ### CLI (Command Line Interface - Interfaz de Línea de Comando)
 
@@ -114,6 +102,15 @@ Total: 3
 Unique: 3
 Broken: 1
 ```
+## Diagrama de flujo
+
+### API
+
+![Api Flowchart](/img/api-flowchart.jpg)
+
+### CLI
+
+![Api Flowchart](/img/cli-flowchart.jpg)
 
 ## Objetivos de aprendizaje
 
