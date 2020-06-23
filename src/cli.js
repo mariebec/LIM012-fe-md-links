@@ -3,42 +3,26 @@
 
 const chalk = require('chalk');
 const mdlinks = require('./mdlinks');
+const cliFunctions = require('./cliFunctions');
 
 const terminalInput = process.argv;
 const validateOp = terminalInput.includes('--validate') || terminalInput.includes('-v');
 const statOp = terminalInput.includes('--stats') || terminalInput.includes('-s');
 const help = terminalInput.includes('--help') || terminalInput.includes('-h');
 
-const instructions = () => {
-  console.log(`
-  ${chalk.yellow('Guide:')}
-
-  Options:
-  ${chalk.yellow('--validate')} | ${chalk.yellow('-v')}
-  ${chalk.yellow('--stats')} | ${chalk.yellow('-s')}
-
-  How to use:
-  ${chalk.yellow('md-links <path>')} get all the links
-  ${chalk.yellow('md-links <path> --validate')} get status of the links
-  ${chalk.yellow('md-links <path> --stats')} get stats
-  ${chalk.yellow('md-links <path> --validate --stats')} get number of unique and broken links
-  `);
-};
-
 if (terminalInput.length < 3) {
-  console.log('\nInsert a path');
-  instructions();
+  console.log('\nInsert a path\n', cliFunctions.instructions());
 } else {
   const route = process.argv[2];
 
   if (terminalInput.length === 3 && help) {
-    instructions();
+    console.log(cliFunctions.instructions());
   } else if (terminalInput.length === 3) {
+  // Solo mdlinks sin opciones
     mdlinks(route, { validate: false }).then((res) => {
       if (res.length > 0) {
         res.forEach((element) => {
-          const index = element.file.indexOf(route.replace('.', ''));
-          const mdPath = element.file.slice(index, element.file.length);
+          const mdPath = cliFunctions.filePath(element.file, route);
           const text = (element.text.length > 50) ? element.text.slice(0, 51) : element.text;
           console.log(`${mdPath} ${chalk.blue(element.href)} ${text}`);
         });
@@ -50,6 +34,7 @@ if (terminalInput.length < 3) {
     });
   } else if (terminalInput.length > 3 && terminalInput.length < 6) {
     if (validateOp && statOp) {
+    // mdlinks con validate y stats
       mdlinks(route, { validate: true }).then((res) => {
         if (res.length > 0) {
           const arr = res.map(((element) => element.href));
@@ -67,6 +52,7 @@ if (terminalInput.length < 3) {
         console.log(err.message);
       });
     } else if (statOp && terminalInput.length === 4) {
+    // mdlinks con stats
       mdlinks(route, { validate: true }).then((res) => {
         const arr = res.map(((element) => element.href));
         const unique = new Set(arr).size;
@@ -75,25 +61,13 @@ if (terminalInput.length < 3) {
         console.log(err.message);
       });
     } else if (validateOp && terminalInput.length === 4) {
+    // mdlinks con validate
       mdlinks(route, { validate: true }).then((res) => {
         if (res.length > 0) {
           res.forEach((element) => {
-            const index = element.file.indexOf(route.replace('.', ''));
-            const mdPath = element.file.slice(index, element.file.length);
-            let status;
-            let statusText;
-            if (element.status < 300) {
-              status = chalk.green(element.status);
-              statusText = chalk.green(element.statusText);
-            } else if (element.status < 400 && element.status > 299) {
-              status = chalk.yellow(element.status);
-              statusText = chalk.yellow(element.statusText);
-            } else {
-              status = chalk.red(element.status);
-              statusText = chalk.red(element.statusText);
-            }
+            const mdPath = cliFunctions.filePath(element.file, route);
             const text = (element.text.length > 50) ? element.text.slice(0, 51) : element.text;
-            console.log(`${mdPath} ${chalk.blue(element.href)} ${statusText} ${status} ${text}`);
+            console.log(`${mdPath} ${chalk.blue(element.href)} ${cliFunctions.textColor(element.statusText)} ${cliFunctions.textColor(element.status)} ${text}`);
           });
         } else {
           console.log(`\nThere are not md files with links in ${chalk.yellow(route)}`);
@@ -102,11 +76,9 @@ if (terminalInput.length < 3) {
         console.log(err.message);
       });
     } else {
-      console.log('\nOption not valid');
-      instructions();
+      console.log('\nOption not valid\n', cliFunctions.instructions());
     }
   } else {
-    console.log('\nOption not valid');
-    instructions();
+    console.log('\nOption not valid\n', cliFunctions.instructions());
   }
 }
