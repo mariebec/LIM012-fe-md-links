@@ -11,22 +11,22 @@ const help = terminalInput.includes('--help') || terminalInput.includes('--h');
 
 const instructions = () => {
   console.log(`
-  ${chalk.bold('Guía:')}
+  ${chalk.yellow('Guide:')}
 
-  ${chalk.grey('Opciones:')}
-  --validate ${chalk.grey('o')} --v 
-  --stats ${chalk.grey('o')} --s 
+  Options:
+  ${chalk.yellow('--validate')} | ${chalk.yellow('--v')}
+  ${chalk.yellow('--stats')} | ${chalk.yellow('--s')}
 
-  ${chalk.grey('Ejemplo de uso:')}
-  md-links <path>  ${chalk.grey('obtener todos los links')}
-  md-links <path> --v ${chalk.grey('obtener status de links')}
-  md-links <path> --s ${chalk.grey('obtener estadísticas')}
-  md-links <path> --v --s ${chalk.grey('obtener status de links y estadísticas')}
+  How to use:
+  ${chalk.yellow('md-links <path>')} get all the links
+  ${chalk.yellow('md-links <path> --validate')} get status of the links
+  ${chalk.yellow('md-links <path> --stats')} get stats
+  ${chalk.yellow('md-links <path> --validate --stats')} get number of unique and broken links
   `);
 };
 
 if (terminalInput.length < 3) {
-  console.log('\nIngrese una ruta');
+  console.log('\nInsert a path');
   instructions();
 } else {
   const route = process.argv[2];
@@ -90,11 +90,11 @@ if (terminalInput.length < 3) {
         console.log(err.message);
       });
     } else {
-      console.log('\nOpción no válida');
+      console.log('\nOption not valid');
       instructions();
     }
   } else {
-    console.log('\nOpción no válida');
+    console.log('\nOption not valid');
     instructions();
   }
 }

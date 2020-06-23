@@ -7,7 +7,7 @@ const mdLinks = (userPath, options) => new Promise((resolve, reject) => {
 
     let arrOfLinks = [];
     if (utilFunctions.pathIsFile(absPath) && !utilFunctions.getExtension(absPath)) {
-      reject(new Error(`\nNo se encontró archivos markdown en ${chalk.yellow(userPath)}`));
+      reject(new Error(`\nThere are not md files in ${chalk.yellow(userPath)}`));
     } else if (options.validate) {
       arrOfLinks = utilFunctions.getStatus(absPath);
       resolve(arrOfLinks);
@@ -16,7 +16,7 @@ const mdLinks = (userPath, options) => new Promise((resolve, reject) => {
       resolve(arrOfLinks);
     }
   } else {
-    reject(new Error(`\nLa ruta ${chalk.yellow(userPath)} no es válida`));
+    reject(new Error(`\nPath ${chalk.yellow(userPath)} is not valid`));
   }
 });
 
