@@ -68,23 +68,23 @@ $ md-links ./some/example.md
 
 ##### `--help`
 
-La opción `--help` mostrará todas las opciones disponibles y sus porisbles combinaciones, además de una breve guía de cómo usar la librería. 
+La opción `--help | -h` mostrará todas las opciones disponibles y sus posibles combinaciones, además de una breve guía de cómo usar la librería. 
 
 ##### `--validate`
 
-La opción `--validate` realizará una petición HTTP para averiguar si el link funciona o no. 
+La opción `--validate | -v` realizará una petición HTTP para averiguar si el link funciona o no. 
 
 Por ejemplo:
 
 ```sh13d99df067c1
 $ md-links ./some/example.md --validate
-./some/example.md http://algo.com/2/3/ Link a algo ok 200 
-./some/example.md https://otra-cosa.net/algun-doc.html fail 404
+./some/example.md http://algo.com/2/3/ ok 200 Texto del enlace
+./some/example.md https://otra-cosa.net/algun-doc.html fail 404 Texto del enlace
 ```
 
 ##### `--stats`
 
-La opción `--stats` obtendrá estadísticas básicas sobre los links.
+La opción `--stats | -v` obtendrá estadísticas básicas sobre los links.
 
 ```sh
 $ md-links ./some/example.md --stats
@@ -93,7 +93,7 @@ Total: 3
 Unique: 3
 ```
 
-También se puede combinar `--stats` y `--validate` para obtener estadísticas que necesiten de los resultados de la validación.
+También se puede combinar `--stats` y `--validate` para obtener estadísticas y saber cuantos no funcionan.
 
 ```sh
 $ md-links ./some/example.md --stats --validate
