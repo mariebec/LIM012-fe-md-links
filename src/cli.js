@@ -5,17 +5,17 @@ const chalk = require('chalk');
 const mdlinks = require('./mdlinks');
 
 const terminalInput = process.argv;
-const validateOp = terminalInput.includes('--validate') || terminalInput.includes('--v');
-const statOp = terminalInput.includes('--stats') || terminalInput.includes('--s');
-const help = terminalInput.includes('--help') || terminalInput.includes('--h');
+const validateOp = terminalInput.includes('--validate') || terminalInput.includes('-v');
+const statOp = terminalInput.includes('--stats') || terminalInput.includes('-s');
+const help = terminalInput.includes('--help') || terminalInput.includes('-h');
 
 const instructions = () => {
   console.log(`
   ${chalk.yellow('Guide:')}
 
   Options:
-  ${chalk.yellow('--validate')} | ${chalk.yellow('--v')}
-  ${chalk.yellow('--stats')} | ${chalk.yellow('--s')}
+  ${chalk.yellow('--validate')} | ${chalk.yellow('-v')}
+  ${chalk.yellow('--stats')} | ${chalk.yellow('-s')}
 
   How to use:
   ${chalk.yellow('md-links <path>')} get all the links
@@ -35,26 +35,34 @@ if (terminalInput.length < 3) {
     instructions();
   } else if (terminalInput.length === 3) {
     mdlinks(route, { validate: false }).then((res) => {
-      res.forEach((element) => {
-        const index = element.file.indexOf(route.replace('.', ''));
-        const mdPath = element.file.slice(index, element.file.length);
-        const text = (element.text.length > 50) ? element.text.slice(0, 51) : element.text;
-        console.log(`${mdPath} ${chalk.blue(element.href)} ${text}`);
-      });
+      if (res.length > 0) {
+        res.forEach((element) => {
+          const index = element.file.indexOf(route.replace('.', ''));
+          const mdPath = element.file.slice(index, element.file.length);
+          const text = (element.text.length > 50) ? element.text.slice(0, 51) : element.text;
+          console.log(`${mdPath} ${chalk.blue(element.href)} ${text}`);
+        });
+      } else {
+        console.log(`\nThere are not md files with links in ${chalk.yellow(route)}`);
+      }
     }).catch((err) => {
       console.log(`${err.message}`);
     });
   } else if (terminalInput.length > 3 && terminalInput.length < 6) {
     if (validateOp && statOp) {
       mdlinks(route, { validate: true }).then((res) => {
-        const arr = res.map(((element) => element.href));
-        const unique = new Set(arr).size;
-        const result = res.reduce((sum, element) => {
-          // eslint-disable-next-line no-param-reassign
-          if (element.status > 399 || typeof element.status === 'string') sum += 1;
-          return sum;
-        }, 0);
-        console.log(`Total: ${arr.length}\nUnique: ${unique}\nBroken: ${chalk.red(result)}`);
+        if (res.length > 0) {
+          const arr = res.map(((element) => element.href));
+          const unique = new Set(arr).size;
+          const result = res.reduce((sum, element) => {
+            // eslint-disable-next-line no-param-reassign
+            if (element.status > 399 || typeof element.status === 'string') sum += 1;
+            return sum;
+          }, 0);
+          console.log(`Total: ${arr.length}\nUnique: ${unique}\nBroken: ${chalk.red(result)}`);
+        } else {
+          console.log(`\nThere are not md files with links in ${chalk.yellow(route)}`);
+        }
       }).catch((err) => {
         console.log(err.message);
       });
@@ -68,24 +76,28 @@ if (terminalInput.length < 3) {
       });
     } else if (validateOp && terminalInput.length === 4) {
       mdlinks(route, { validate: true }).then((res) => {
-        res.forEach((element) => {
-          const index = element.file.indexOf(route.replace('.', ''));
-          const mdPath = element.file.slice(index, element.file.length);
-          let status;
-          let statusText;
-          if (element.status < 300) {
-            status = chalk.green(element.status);
-            statusText = chalk.green(element.statusText);
-          } else if (element.status < 400 && element.status > 299) {
-            status = chalk.yellow(element.status);
-            statusText = chalk.yellow(element.statusText);
-          } else {
-            status = chalk.red(element.status);
-            statusText = chalk.red(element.statusText);
-          }
-          const text = (element.text.length > 50) ? element.text.slice(0, 51) : element.text;
-          console.log(`${mdPath} ${chalk.blue(element.href)} ${statusText} ${status} ${text}`);
-        });
+        if (res.length > 0) {
+          res.forEach((element) => {
+            const index = element.file.indexOf(route.replace('.', ''));
+            const mdPath = element.file.slice(index, element.file.length);
+            let status;
+            let statusText;
+            if (element.status < 300) {
+              status = chalk.green(element.status);
+              statusText = chalk.green(element.statusText);
+            } else if (element.status < 400 && element.status > 299) {
+              status = chalk.yellow(element.status);
+              statusText = chalk.yellow(element.statusText);
+            } else {
+              status = chalk.red(element.status);
+              statusText = chalk.red(element.statusText);
+            }
+            const text = (element.text.length > 50) ? element.text.slice(0, 51) : element.text;
+            console.log(`${mdPath} ${chalk.blue(element.href)} ${statusText} ${status} ${text}`);
+          });
+        } else {
+          console.log(`\nThere are not md files with links in ${chalk.yellow(route)}`);
+        }
       }).catch((err) => {
         console.log(err.message);
       });
