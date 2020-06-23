@@ -67,7 +67,7 @@ if (terminalInput.length < 3) {
           res.forEach((element) => {
             const mdPath = cliFunctions.filePath(element.file, route);
             const text = (element.text.length > 50) ? element.text.slice(0, 51) : element.text;
-            console.log(`${mdPath} ${chalk.blue(element.href)} ${cliFunctions.textColor(element.statusText)} ${cliFunctions.textColor(element.status)} ${text}`);
+            console.log(`${mdPath} ${chalk.blue(element.href)} ${cliFunctions.textColor(element.statusText, element.status)} ${text}`);
           });
         } else {
           console.log(`\nThere are not md files with links in ${chalk.yellow(route)}`);
