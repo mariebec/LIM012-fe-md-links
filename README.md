@@ -84,7 +84,7 @@ $ md-links ./some/example.md --validate
 
 ##### `--stats`
 
-La opción `--stats | -v` obtendrá estadísticas básicas sobre los links.
+La opción `--stats | -s` obtendrá estadísticas básicas sobre los links.
 
 ```sh
 $ md-links ./some/example.md --stats
@@ -93,7 +93,7 @@ Total: 3
 Unique: 3
 ```
 
-También se puede combinar `--stats` y `--validate` para obtener estadísticas y saber cuantos no funcionan.
+También se puede combinar `--stats` y `--validate` para obtener estadísticas de los links y saber cuantos no funcionan.
 
 ```sh
 $ md-links ./some/example.md --stats --validate
